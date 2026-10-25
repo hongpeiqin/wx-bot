@@ -1,9 +1,9 @@
 # 给 Muse 搭微信的优化版提示词（社区补充文档，不替代上游 docs/agents/muse.md）
 
 > 用途：把这份文档直接交给朋友的 Muse，让它按步骤装 wx-bot、接微信、做监控和对话整理。
-> 来源：lawrencewzen/wx-bot，Muse 用 pull 模式。实测版本 v0.5.1（2026-10-25），朋友装的时候请用最新发布版，并校验 sha256。
+> 来源：lawrencewzen/wx-bot，Muse 用 pull 模式。朋友装的时候请用 Fork 最新发布版，并校验 sha256（2026-10-25 已发布 v0.5.3，含全部平台二进制，实测原版为 v0.5.1）。
 > 本文档的 Fork 地址：hongpeiqin/wx-bot（朋友只从这个 Fork 更新，不用再兼顾上游和本地优化两条线；上游同步和本地优化由维护者 hongpeiqin 一个人做）。
-> Fork 里已有发布工作流（推送 v* 标签即自动编译并发布二进制），维护者打标签并确认发布包生成后，朋友就可以只从 Fork 的 releases 下载，不用再回上游下载；在维护者打标签之前，不要直接用 Fork 的 releases 地址。
+> Fork 里已有发布工作流（推送 v* 标签即自动编译并发布二进制）。2026-10-25 已发布 v0.5.3，含 wx-bot_linux_amd64/arm64（含 musl 版）、wx-bot_darwin_amd64/arm64、wx-bot-keepalive、checksums.txt，朋友直接用 Fork 的 releases/latest 下载即可，不用再回上游下载。
 > 关键提醒：每个朋友必须用自己的微信扫码、用自己的 Muse 账号和运行环境，**不要复制任何人的登录态、配置文件、wxid、代理或 token**。下面所有带 `<>` 的地方都要换成朋友自己的值。
 
 ## 一、给 Muse 的总指令（先说清楚，再动手）
