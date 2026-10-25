@@ -2,7 +2,8 @@
 
 > 用途：把这份文档直接交给朋友的 Muse，让它按步骤装 wx-bot、接微信、做监控和对话整理。
 > 来源：lawrencewzen/wx-bot，Muse 用 pull 模式。实测版本 v0.5.1（2026-10-25），朋友装的时候请用最新发布版，并校验 sha256。
-> 本文档的 Fork 地址：hongpeiqin/wx-bot（仅文档和提示词走 Fork，二进制发布包仍从上游 lawrencewzen/wx-bot 下载，Fork 本身不会自动带上游发布包，直接把下载地址换成 Fork 会 404）。
+> 本文档的 Fork 地址：hongpeiqin/wx-bot（朋友只从这个 Fork 更新，不用再兼顾上游和本地优化两条线；上游同步和本地优化由维护者 hongpeiqin 一个人做）。
+> Fork 里已有发布工作流（推送 v* 标签即自动编译并发布二进制），维护者打标签并确认发布包生成后，朋友就可以只从 Fork 的 releases 下载，不用再回上游下载；在维护者打标签之前，不要直接用 Fork 的 releases 地址。
 > 关键提醒：每个朋友必须用自己的微信扫码、用自己的 Muse 账号和运行环境，**不要复制任何人的登录态、配置文件、wxid、代理或 token**。下面所有带 `<>` 的地方都要换成朋友自己的值。
 
 ## 一、给 Muse 的总指令（先说清楚，再动手）
@@ -27,7 +28,7 @@ mkdir -p ~/.local/bin
 case "$(uname -m)" in x86_64) ARCH=amd64 ;; aarch64|arm64) ARCH=arm64 ;; esac
 LIBC=""; ls /lib/ld-musl-* >/dev/null 2>&1 && LIBC=_musl
 ASSET="wx-bot_linux_${ARCH}${LIBC}"
-BASE=https://github.com/lawrencewzen/wx-bot/releases/latest/download
+BASE=https://github.com/hongpeiqin/wx-bot/releases/latest/download
 cd ~/.local/bin
 curl -fLO "$BASE/$ASSET" && curl -fLO "$BASE/checksums.txt"
 sha256sum -c --ignore-missing checksums.txt
