@@ -32,6 +32,13 @@ export interface Config {
   bindings: Binding[];
   /** Days of chat logs to keep. 0 (default) disables writing. */
   chatlog_days: number;
+  /**
+   * Whether wx-bot itself sends stall/recovered notices directly to the
+   * WeChat owner when queued messages wait over 10 minutes.
+   * Default true (upstream behaviour). Set false to keep all such notices
+   * in the agent's own chat only, and never send them to WeChat.
+   */
+  stall_notify: boolean;
 }
 
 export const defaultConfigPath = () => join(homedir(), ".config", "wx-bot", "config.json");
@@ -42,7 +49,7 @@ export const findBinding = (c: Config, name: string) => c.bindings.find((b) => b
 
 // Allowed keys at each level; anything else is rejected (Go: DisallowUnknownFields).
 const SHAPE = {
-  root: ["state_dir", "media_dir", "local_api", "bindings", "chatlog_days"],
+  root: ["state_dir", "media_dir", "local_api", "bindings", "chatlog_days", "stall_notify"],
   local_api: ["listen", "token"],
   // allow_wxids / forward_unallowed are accepted so old configs parse, then ignored.
   binding: ["name", "delivery", "webhook", "allow_wxids", "forward_unallowed"],
@@ -68,6 +75,15 @@ function deprecatedAllowIgnored(raw: { allow_wxids?: unknown; forward_unallowed?
   const ids = raw.allow_wxids;
   if (Array.isArray(ids) && ids.some((x) => x != null && x !== "")) return true;
   return raw.forward_unallowed === true;
+}
+
+/** Absent → true (upstream default). Non-booleans are config errors. */
+function stallNotify(v: unknown): boolean {
+  if (v === undefined || v === null) return true;
+  if (typeof v !== "boolean") {
+    throw new Error("parse config: stall_notify must be a boolean");
+  }
+  return v;
 }
 
 /** Absent → 0 (off). Non-integers and negatives are config errors. */
@@ -144,6 +160,7 @@ export function parseConfig(text: string): Config {
       token: ex(str(raw.local_api?.token, "local_api.token"), "local_api.token"),
     },
     chatlog_days: chatlogDays(raw.chatlog_days),
+    stall_notify: stallNotify(raw.stall_notify),
     bindings: bindingsRaw.map((b, i) => {
       checkKeys(b, SHAPE.binding, `bindings[${i}]`);
       checkKeys(b.webhook, SHAPE.webhook, `bindings[${i}].webhook`);

@@ -31,6 +31,13 @@ test("chatlog_days accepts a positive integer", async () => {
   expect(c.chatlog_days).toBe(7);
 });
 
+test("stall_notify defaults to true and accepts false", async () => {
+  const c1 = await loadConfig(writeCfg(`{"bindings":[]}`));
+  expect(c1.stall_notify).toBe(true);
+  const c2 = await loadConfig(writeCfg(`{"stall_notify":false,"bindings":[]}`));
+  expect(c2.stall_notify).toBe(false);
+});
+
 test("env expansion and ~", async () => {
   process.env.WX_HOOK = "https://hooks.example/x";
   process.env.WX_KEY = "sekrit";
@@ -55,6 +62,7 @@ test.each([
   [`{"chatlog_days":-1,"bindings":[]}`, "chatlog_days"],
   [`{"chatlog_days":1.5,"bindings":[]}`, "chatlog_days"],
   [`{"chatlog_days":"7","bindings":[]}`, "chatlog_days"],
+  [`{"stall_notify":"no","bindings":[]}`, "stall_notify"],
 ])("rejects %s", async (body, want) => {
   await expect(loadConfig(writeCfg(body))).rejects.toThrow(want);
 });

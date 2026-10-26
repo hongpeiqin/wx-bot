@@ -158,7 +158,11 @@ async function runMain(configPath: string): Promise<number> {
         }
       }),
     );
-    tasks.push(stallWatch(box, lb, cfg, ctl.signal));
+    // stall_notify=false: never send stall/recovered notices to WeChat;
+    // the agent reports queue stalls in its own chat instead.
+    if (cfg.stall_notify !== false) {
+      tasks.push(stallWatch(box, lb, cfg, ctl.signal));
+    }
   }
 
   tasks.push(pruneLoop(box, cfg, ctl.signal));
@@ -242,6 +246,7 @@ async function webhookWorker(box: Inbox, binding: string, cfg: Config, signal: A
  * (agent down, webhook failing), and again when they move.
  */
 async function stallWatch(box: Inbox, lb: LiveBinding, cfg: Config, signal: AbortSignal) {
+  if (cfg.stall_notify === false) return;
   const slog = logger({ component: "stallwatch", binding: lb.name });
   const owner = lb.session.ilink_user_id;
   let notified = false;

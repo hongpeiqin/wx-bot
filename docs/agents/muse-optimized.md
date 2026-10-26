@@ -131,6 +131,8 @@ WXBOT_RELEASE_BASE=https://github.com/hongpeiqin/wx-bot/releases ~/.local/bin/wx
 
 ## 六、常见故障速查
 
+- wx-bot 自带 stall 提醒：消息在收件箱超过 10 分钟没被确认，wx-bot 会直接用微信发给扫码号，恢复后再发一条“已恢复”，配置里没有开关时就是这个默认行为（默认 `stall_notify: true`）。如果你不想让这类处理报错发到微信，在 `config.json` 根级加 `"stall_notify": false`，wx-bot 就不再往微信发 stall/恢复提醒，排队异常只由 Agent 在自己的聊天里报告；朋友那边不写这一项就还是默认开着。
+
 - health 退出码非 0：先查代理 env 有没有写、服务有没有真的在跑，再看 troubleshoot，不要只重启了事。
 - send 报 no context_token：用户还没先给机器人发过消息，等用户先发，不要重试。
 - send 报 expired / -14：登录过期，重新扫码，并重启服务。
