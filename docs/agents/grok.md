@@ -21,7 +21,7 @@
 1. **安装 wx-bot**
 
    ```bash
-   git clone https://github.com/lawrencewzen/wx-bot
+   git clone https://github.com/hongpeiqin/wx-bot
    cd wx-bot
    ./install.sh --service
    ```
@@ -57,7 +57,7 @@
 
 8. **建保活 routine**：Grok Bot 等 Agent 的云电脑会自动休眠，也会被自动重置；休眠或重置时 wx-bot 可能被直接停掉，安装的程序、服务、登录态都可能丢失。这一步不能省。再建一个 routine，名称如「wx-bot 保活」，触发方式选**定时、每 10 分钟**，指令写：
 
-   > 运行 `~/.local/bin/wx-bot-keepalive`（不存在就先执行 `curl -fsSL https://raw.githubusercontent.com/lawrencewzen/wx-bot/main/deploy/keepalive.sh -o ~/.local/bin/wx-bot-keepalive && chmod 0755 ~/.local/bin/wx-bot-keepalive`）。输出 `ok` 或 `restarted: …` 时什么都不用说，静默结束；输出 `NEED_USER: …` 时，把后面的原因翻译成中文，在聊天里告诉用户并说明怎么处理（例如登录过期就请用户重新扫码）。
+   > 运行 `~/.local/bin/wx-bot-keepalive`（不存在就先执行 `curl -fsSL https://raw.githubusercontent.com/hongpeiqin/wx-bot/main/deploy/keepalive.sh -o ~/.local/bin/wx-bot-keepalive && chmod 0755 ~/.local/bin/wx-bot-keepalive`）。输出 `ok` 或 `restarted: …` 时什么都不用说，静默结束；输出 `NEED_USER: …` 时，把后面的原因翻译成中文，在聊天里告诉用户并说明怎么处理（例如登录过期就请用户重新扫码）。
 
    这个脚本会：wx-bot 没在运行就用保存的登录状态重新启动（**不需要重新扫码**），程序文件丢了就自动重装，只有登录过期、代理失效这类它修不好的问题才输出 `NEED_USER`。
 

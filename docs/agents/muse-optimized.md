@@ -1,14 +1,14 @@
-# 给 Muse 搭微信的优化版提示词（社区补充文档，不替代上游 docs/agents/muse.md）
+# 给 Muse 搭微信的优化版提示词（Fork 补充文档，不替代本仓库 docs/agents/muse.md）
 
 > 用途：把这份文档直接交给朋友的 Muse，让它按步骤装 wx-bot、接微信、做监控和对话整理。
-> 来源：lawrencewzen/wx-bot，Muse 用 pull 模式。朋友装的时候请用 Fork 最新发布版，并校验 sha256（2026-10-25 已发布 v0.5.3，含全部平台二进制，实测原版为 v0.5.1）。
+> 来源：[lawrencewzen/wx-bot](https://github.com/lawrencewzen/wx-bot)，Muse 用 pull 模式。朋友装的时候请用 Fork 最新发布版，并校验 sha256（2026-10-25 已发布 v0.5.3，含全部平台二进制，实测原版为 v0.5.1）。
 > 本文档的 Fork 地址：hongpeiqin/wx-bot（朋友只从这个 Fork 更新，不用再兼顾上游和本地优化两条线；上游同步和本地优化由维护者 hongpeiqin 一个人做）。
 > Fork 里已有发布工作流（推送 v* 标签即自动编译并发布二进制）。2026-10-25 已发布 v0.5.3，含 wx-bot_linux_amd64/arm64（含 musl 版）、wx-bot_darwin_amd64/arm64、wx-bot-keepalive、checksums.txt，朋友直接用 Fork 的 releases/latest 下载即可，不用再回上游下载。
 > 关键提醒：每个朋友必须用自己的微信扫码、用自己的 Muse 账号和运行环境，**不要复制任何人的登录态、配置文件、wxid、代理或 token**。下面所有带 `<>` 的地方都要换成朋友自己的值。
 
 ## 一、给 Muse 的总指令（先说清楚，再动手）
 
-你是 Muse，正在帮用户把微信接入你，用的项目是 lawrencewzen/wx-bot，Muse 走 pull 模式。
+你是 Muse，正在帮用户把微信接入你，用的项目是 hongpeiqin/wx-bot（来源：lawrencewzen/wx-bot），Muse 走 pull 模式。
 
 硬约束，先于一切细节：
 
@@ -35,6 +35,16 @@ sha256sum -c --ignore-missing checksums.txt
 mv "$ASSET" wx-bot && chmod 0755 wx-bot && rm checksums.txt
 ~/.local/bin/wx-bot version
 ```
+
+后续升级、检查及回滚统一按本 Fork 的 [升级说明](upgrade.md)。**已发布的 v0.5.3 及更早二进制仍可能内置上游地址**，即使是从 Fork 下载也要显式指定发布源：
+
+```bash
+WXBOT_RELEASE_BASE=https://github.com/hongpeiqin/wx-bot/releases ~/.local/bin/wx-bot update --check
+WXBOT_RELEASE_BASE=https://github.com/hongpeiqin/wx-bot/releases ~/.local/bin/wx-bot update
+# 回滚时同样保留 WXBOT_RELEASE_BASE，再加 --version <本 Fork 的旧版本号>
+```
+
+旧保活脚本也可能仍从上游重装；用 [升级说明](upgrade.md) 中本 Fork 的安装脚本重新安装可刷新它。源码修复不改变已发布的二进制，默认源修复需要后续发布新版本才能随二进制交付。
 
 ### 2. 写配置
 

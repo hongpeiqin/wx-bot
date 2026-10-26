@@ -46,7 +46,7 @@ sudo systemctl restart wx-bot
 pkill -f "wx-bot.* run$" 2>/dev/null || true
 HOME_ABS="$(cd ~ && pwd)"
 USER_NAME="$(stat -c '%U' "$HOME_ABS" 2>/dev/null || id -un)"
-curl -fsSL https://raw.githubusercontent.com/lawrencewzen/wx-bot/main/adapters/muse/wx-bot.service \
+curl -fsSL https://raw.githubusercontent.com/hongpeiqin/wx-bot/main/adapters/muse/wx-bot.service \
   | sed "s|__HOME__|${HOME_ABS}|g; s|__USER__|${USER_NAME}|g" \
   | tee /etc/systemd/system/wx-bot.service >/dev/null
 systemctl daemon-reload && systemctl enable --now wx-bot
@@ -80,7 +80,7 @@ systemctl --user restart wx-bot
 **找不到 unit：** 配置和登录态都在，**不用重新扫码**。按 [Grok 第 1 步](grok.md) 的 `--service` 重装 user unit（没有仓库时用下面这条，等价于 clone 后 `./install.sh --service`），再按第 7 步 enable：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/lawrencewzen/wx-bot/main/install.sh | bash -s -- --service
+curl -fsSL https://raw.githubusercontent.com/hongpeiqin/wx-bot/main/install.sh | bash -s -- --service
 systemctl --user enable --now wx-bot
 loginctl enable-linger "$(id -un)"
 loginctl show-user "$(id -un)" -p Linger

@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { FlagError, parseFlags, usageLines } from "../flags.ts";
 
-const RELEASES = process.env.WXBOT_RELEASE_BASE ?? "https://github.com/lawrencewzen/wx-bot/releases";
+const RELEASES = process.env.WXBOT_RELEASE_BASE ?? "https://github.com/hongpeiqin/wx-bot/releases";
 
 const SPEC = {
   check: { type: "bool", usage: "only report whether a newer release exists" },
@@ -17,7 +17,8 @@ const USAGE = `usage: wx-bot update [--check] [--version vX.Y.Z] [--no-restart]
 
 Downloads the release for this platform, verifies its sha256, replaces this
 binary and restarts a running wx-bot service. Config, login state and inbox
-are kept.
+are kept. Default source: hongpeiqin/wx-bot releases.
+Set WXBOT_RELEASE_BASE to override the releases base URL.
 ${usageLines(SPEC)}`;
 
 type Semver = [number, number, number];

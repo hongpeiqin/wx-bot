@@ -4,6 +4,8 @@
 
 wx-bot 跑在**你自己的运行环境**里（不是用户的 Mac），作为 systemd 服务常驻；消息进入本地收件箱，由一个 hook 每隔几秒检测，有新消息就唤醒你，你再领取、回复、确认。以下路径里的 `~` 都是你运行环境的 home 目录。
 
+朋友统一从 `hongpeiqin/wx-bot` 安装和更新；后续升级按 [升级说明](upgrade.md)，旧二进制务必显式设置 fork 发布源。
+
 1. **安装**（直接下载发布版，单文件约 90 MB）
 
    ```bash
@@ -11,7 +13,7 @@ wx-bot 跑在**你自己的运行环境**里（不是用户的 Mac），作为 s
    case "$(uname -m)" in x86_64) ARCH=amd64 ;; aarch64|arm64) ARCH=arm64 ;; esac
    LIBC=""; ls /lib/ld-musl-* >/dev/null 2>&1 && LIBC=_musl      # Alpine 等 musl 系统
    ASSET="wx-bot_linux_${ARCH}${LIBC}"
-   BASE=https://github.com/lawrencewzen/wx-bot/releases/latest/download
+   BASE=https://github.com/hongpeiqin/wx-bot/releases/latest/download
    cd ~/.local/bin
    curl -fLO "$BASE/$ASSET" && curl -fLO "$BASE/checksums.txt"
    sha256sum -c --ignore-missing checksums.txt
@@ -50,7 +52,7 @@ wx-bot 跑在**你自己的运行环境**里（不是用户的 Mac），作为 s
    ```bash
    HOME_ABS="$(cd ~ && pwd)"
    USER_NAME="$(stat -c '%U' "$HOME_ABS" 2>/dev/null || id -un)"
-   curl -fsSL https://raw.githubusercontent.com/lawrencewzen/wx-bot/main/adapters/muse/wx-bot.service \
+   curl -fsSL https://raw.githubusercontent.com/hongpeiqin/wx-bot/main/adapters/muse/wx-bot.service \
      | sed "s|__HOME__|${HOME_ABS}|g; s|__USER__|${USER_NAME}|g" \
      | tee /etc/systemd/system/wx-bot.service >/dev/null
    systemctl daemon-reload && systemctl enable --now wx-bot
@@ -106,7 +108,7 @@ systemctl cat wx-bot
 pkill -f "wx-bot.* run$" 2>/dev/null || true
 HOME_ABS="$(cd ~ && pwd)"
 USER_NAME="$(stat -c '%U' "$HOME_ABS" 2>/dev/null || id -un)"
-curl -fsSL https://raw.githubusercontent.com/lawrencewzen/wx-bot/main/adapters/muse/wx-bot.service \
+curl -fsSL https://raw.githubusercontent.com/hongpeiqin/wx-bot/main/adapters/muse/wx-bot.service \
   | sed "s|__HOME__|${HOME_ABS}|g; s|__USER__|${USER_NAME}|g" \
   | tee /etc/systemd/system/wx-bot.service >/dev/null
 systemctl daemon-reload && systemctl enable --now wx-bot

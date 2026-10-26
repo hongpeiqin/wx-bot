@@ -4,13 +4,18 @@ Pi Durable 通过 **webhook** 接收微信消息，通过本地 `POST /v1/send` 
 
 ## 1. 镜像
 
-使用官方镜像，不需要自己克隆源码或打补丁：
+朋友的 Docker 部署也统一使用 [hongpeiqin/wx-bot](https://github.com/hongpeiqin/wx-bot)。本次未核实 Fork 的 GHCR 镜像及标签是否可用，先从 Fork 的发布标签构建本地镜像；不要用上游镜像替代。
 
-```
-ghcr.io/lawrencewzen/wx-bot:<版本>      # 例如 0.4.4；也有 0.4 和 latest
+```bash
+git clone https://github.com/hongpeiqin/wx-bot.git wx-bot-fork
+cd wx-bot-fork
+git checkout --detach v0.5.3
+docker build --build-arg VERSION=v0.5.3 -t wx-bot-fork:0.5.3 .
 ```
 
-镜像支持 `linux/amd64`、`linux/arm64`，以非 root 用户 `bot` 运行，`/state` 和 `/media` 为数据卷。配置文件挂载到 `/etc/wx-bot/config.json`。
+本地镜像名 `wx-bot-fork:0.5.3` 与下方 compose 一致，不代表已发布的远程镜像。Dockerfile 支持 `linux/amd64`、`linux/arm64`，上面的命令为本机架构构建；跨架构部署需为目标平台构建并将镜像加载到目标 Docker 主机。容器以非 root 用户 `bot` 运行，`/state` 和 `/media` 为数据卷，配置文件挂载到 `/etc/wx-bot/config.json`。
+
+升级时在这个独立源码目录获取 Fork 的新标签、checkout 该标签，替换上述版本号重新构建，并把 compose 中的本地镜像标签改为相同版本，再运行 `docker compose --profile wechat up -d wx-bot`。不要在容器内运行 `wx-bot update`。仅在维护者核实 Fork 镜像和目标标签可拉取后，才改用其远程镜像。
 
 ## 2. 配置
 
@@ -50,7 +55,8 @@ services:
 
   wx-bot:
     profiles: ["wechat"]
-    image: ghcr.io/lawrencewzen/wx-bot:0.4.4
+    image: wx-bot-fork:0.5.3           # 第 1 节从 Fork 标签构建的本地镜像
+    pull_policy: never               # 使用目标 Docker 主机已构建/加载的镜像
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -107,7 +113,7 @@ v0.3.0 起，`deploy/wechat/patch_upstream.py` 里的修改都已在上游：
 
 迁移步骤：
 
-1. compose 里 `wx-bot` 服务改用 `image: ghcr.io/lawrencewzen/wx-bot:0.4.4`，删除 `build`。
+1. 按第 1 节从 Fork 标签构建本地镜像，compose 里 `wx-bot` 服务改用 `image: wx-bot-fork:0.5.3` 和 `pull_policy: never`，删除旧的 `build`。
 2. 配置文件改为挂载（见第 3 节）。
 3. 删除 `deploy/wechat/Dockerfile` 和 `deploy/wechat/patch_upstream.py`。
 4. 现有 `wx-bot-state` 卷可直接沿用，登录状态和游标不丢；`inbox.db` 首次启动时自动创建。若容器内无法写入 `/state`，检查卷内文件属主是否与镜像中的 `bot` 用户一致。

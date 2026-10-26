@@ -28,7 +28,7 @@
 ---
 
 > [!IMPORTANT]
-> **🤖 如果你是 Agent：先读 [`AGENTS.md`](https://github.com/lawrencewzen/wx-bot/blob/main/AGENTS.md)，找到你对应的文件，按步骤执行。**
+> **🤖 如果你是 Agent：先读 [`AGENTS.md`](https://github.com/hongpeiqin/wx-bot/blob/main/AGENTS.md)，找到你对应的文件，按步骤执行。**
 > Grok Bot：创建 routine 后，**必须在聊天回复里直接发出「Webhook URL」和「Webhook key」两个字段链接**，用户自己找不到。
 
 ## 特点
@@ -44,12 +44,14 @@ WeChat ──iLink──▶ wx-bot (inbox) ──webhook / pull──▶ Agent
        ◀─────────────────────────── wx-bot send ────┘
 ```
 
+> 本 Fork：[`hongpeiqin/wx-bot`](https://github.com/hongpeiqin/wx-bot)。朋友的安装和更新统一使用本 Fork；上游同步由维护者处理。感谢原项目 [`lawrencewzen/wx-bot`](https://github.com/lawrencewzen/wx-bot)。
+
 ## 快速开始
 
 把这句话发给你的 Grok Bot 或 Muse：
 
 ```
-帮我用 wx-bot 把微信接入你：https://github.com/lawrencewzen/wx-bot
+帮我用 wx-bot 把微信接入你：https://github.com/hongpeiqin/wx-bot
 ```
 
 它会自己装好，你只需要**用微信扫码**（Grok 还要你点两个链接，把 URL 贴回聊天、把 key 填进加密框）。
@@ -65,7 +67,7 @@ WeChat ──iLink──▶ wx-bot (inbox) ──webhook / pull──▶ Agent
 ### 手动安装
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/lawrencewzen/wx-bot/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/hongpeiqin/wx-bot/main/install.sh | bash
 # 源码安装：git clone 后运行 ./install.sh --service（--service 同时装开机自启）
 ```
 
@@ -95,6 +97,8 @@ wx-bot send --binding xiaox --to <wxid> --image ./a.jpg   # 还有 --file / --vi
 
 **只发纯文本**，微信不渲染 Markdown。事件格式、签名、本地 HTTP API、`alert` 异常通知等细节见 [`docs/protocol.md`](docs/protocol.md)。
 
+升级及旧版迁移见 [升级说明](docs/agents/upgrade.md)。已有 v0.5.3 及更早的二进制可能仍默认更新到上游，升级、检查和回滚时请显式设置 `WXBOT_RELEASE_BASE=https://github.com/hongpeiqin/wx-bot/releases`。
+
 ## 运维
 
 | 做什么 | 命令 |
@@ -103,8 +107,8 @@ wx-bot send --binding xiaox --to <wxid> --image ./a.jpg   # 还有 --file / --vi
 | 查微信聊天记录 | `wx-bot chatlog [--since 24h] [--with wxid]` |
 | 排查收不到消息 | `wx-bot health --grace 0` |
 | 重放已放弃（dead）的消息 | `wx-bot inbox requeue [--binding B] [event_id...]` |
-| 升级（不用重新扫码） | `wx-bot update` |
-| 回滚 | `wx-bot update --version <版本>` |
+| 升级（不用重新扫码） | `WXBOT_RELEASE_BASE=https://github.com/hongpeiqin/wx-bot/releases wx-bot update` |
+| 回滚 | `WXBOT_RELEASE_BASE=https://github.com/hongpeiqin/wx-bot/releases wx-bot update --version <本 Fork 的版本>` |
 | 卸载 | `wx-bot uninstall --yes`（加 `--keep-data` 保留登录） |
 
 配置项 `chatlog_days`（整数，默认 `0` 关闭）开启后，收发原文按天追加到 `<state_dir>/chatlog/<binding>/<YYYY-MM-DD>.jsonl`，并保留最近 N 天；改回 `0` 只停止写入，不删已有文件。聊天记录是隐私数据，默认不写。查询用 `wx-bot chatlog --since 24h`（可加 `--with <wxid>`、`--binding`、`--limit`、`--json`）；未开启且没有历史文件时退出码 1，并提示如何打开。

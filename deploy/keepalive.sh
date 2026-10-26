@@ -17,7 +17,7 @@ set -u
 WXBOT="${WXBOT:-$HOME/.local/bin/wx-bot}"
 ENVFILE="${HOME}/.config/wx-bot/env"
 LOG="${HOME}/.local/state/wx-bot/run.log"
-INSTALL_URL="https://raw.githubusercontent.com/lawrencewzen/wx-bot/main/install.sh"
+INSTALL_URL="https://raw.githubusercontent.com/hongpeiqin/wx-bot/main/install.sh"
 
 # The config may reference env: variables (e.g. WXBOT_WEBHOOK_KEY) that only
 # the env file sets; every wx-bot command below needs them to load the config.

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Install or upgrade wx-bot.
 #
-#   curl -fsSL https://raw.githubusercontent.com/lawrencewzen/wx-bot/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/hongpeiqin/wx-bot/main/install.sh | bash
 #   ./install.sh                      # from a checkout
 #
 # Upgrading keeps config, login state and inbox; a running service is restarted.
 set -euo pipefail
 
-REPO="lawrencewzen/wx-bot"
+REPO="hongpeiqin/wx-bot"
 RAW_BASE="${WXBOT_RAW_URL:-https://raw.githubusercontent.com/${REPO}/main}"
 
 usage() {
@@ -28,6 +28,8 @@ running wx-bot service is restarted.
   --release   download a release even when building from source is possible
 
 Environment: WXBOT_BINARY=/path/to/wx-bot installs a binary you already have.
+WXBOT_RELEASE_URL overrides the release asset directory (including download/tag
+or latest/download); WXBOT_RAW_URL overrides the raw repository directory.
 EOF
 }
 
@@ -289,7 +291,7 @@ if [[ -n "$OLD_VERSION" ]]; then
   restart_service
   cat <<EOF
 
-From v0.4.0 on, upgrade with: wx-bot update
+From v0.4.0 on, upgrade with: WXBOT_RELEASE_BASE=https://github.com/${REPO}/releases wx-bot update
 EOF
   exit 0
 fi
@@ -304,5 +306,5 @@ Next steps:
   3. ${TARGET} run
 
 Put ${BINDIR} on PATH if needed. Replies are plain text (no Markdown).
-Upgrade later with: wx-bot update
+Upgrade later with: WXBOT_RELEASE_BASE=https://github.com/${REPO}/releases wx-bot update
 EOF
